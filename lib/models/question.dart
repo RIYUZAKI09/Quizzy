@@ -5,12 +5,25 @@ class Question {
   final List<dynamic> ans;
   final int correctAnswer;
   final String image;
-  Question({this.ans, this.correctAnswer, this.image, this.question});
+  final int time;
+  final int marks;
+  final bool isTimed;
+  Question(
+      {this.ans,
+      this.correctAnswer,
+      this.image,
+      this.question,
+      this.time,
+      this.marks,
+      this.isTimed});
   static Question fromDocumentSnapshot(DocumentSnapshot doc) {
     return Question(
         correctAnswer: int.tryParse(doc['correct']),
         ans: doc['ans'],
         question: doc['question'],
-        image: doc['image'] ?? "");
+        image: doc['image'] ?? "",
+        isTimed: true,
+        time: 10,
+        marks: 1);
   }
 }

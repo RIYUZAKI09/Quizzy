@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:oops_project/ui/homePage.dart';
 import 'package:oops_project/ui/signUp.dart';
 
 import 'constants.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
           // Color.fromRGBO(8, 146, 208, 1),
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: WelcomePage(),
+        home: HomePage(),
       ),
     );
   }

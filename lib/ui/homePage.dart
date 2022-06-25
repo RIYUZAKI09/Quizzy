@@ -4,6 +4,8 @@ import 'package:oops_project/providers/repository.dart';
 import 'package:oops_project/ui/quizPage.dart';
 import 'package:provider/provider.dart';
 
+import 'newQuiz.dart';
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -14,6 +16,14 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+          child: Container(
+            child:
+              Icon(Icons.add)
+          ),
+          onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>NewQuiz()));
+          }),
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 20),
         child: Center(

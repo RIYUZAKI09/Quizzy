@@ -22,6 +22,8 @@ class _QuizPageState extends State<QuizPage> {
   Timer _timer;
   int _start = 600;
   int totalQuestions;
+  int prevStart = 600;
+  int total = 0;
   @override
   void initState() {
     super.initState();
@@ -124,6 +126,12 @@ class _QuizPageState extends State<QuizPage> {
                         allQues.add(question);
                       }
                       totalQuestions = allQues.length;
+                      // var val = (allQues[currentQuestion].time) * 60;
+                      // total = prevStart - _start;
+                      // prevStart = val;
+                      // // setState(() {
+                      // _start = val;
+                      // // });
                       return QuizQuestion(
                         key: Key(currentQuestion.toString()),
                         question: allQues[currentQuestion],
@@ -132,8 +140,11 @@ class _QuizPageState extends State<QuizPage> {
                             correctAns++;
                           });
                         },
+                        setTimer: (val) {},
                         next: () {
                           if (currentQuestion == allQues.length - 1) {
+                            //TO Do
+                            //total_time = total_quiz_time - _start
                             setState(() {
                               isFinished = true;
                             });
@@ -163,7 +174,9 @@ class QuizQuestion extends StatefulWidget {
   final Question question;
   final Function next;
   final Function incrementCorrect;
-  QuizQuestion({Key key, this.question, this.next, this.incrementCorrect})
+  final Function setTimer;
+  QuizQuestion(
+      {Key key, this.question, this.next, this.incrementCorrect, this.setTimer})
       : super(key: key);
   @override
   _QuizQuestionState createState() => _QuizQuestionState();
@@ -175,11 +188,60 @@ class _QuizQuestionState extends State<QuizQuestion>
   int currentAnsIndex = -1;
   @override
   bool get wantKeepAlive => true;
+  Timer _timer;
+  int _start;
+  bool isFinished = false;
+  @override
+  void initState() {
+    super.initState();
+    if (widget.question.isTimed) {
+      _start = widget.question.time;
+      startTimer();
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  void startTimer() {
+    const oneSec = const Duration(seconds: 1);
+    _timer = new Timer.periodic(
+      oneSec,
+      (Timer timer) => setState(
+        () {
+          if (isFinished) {
+            timer.cancel();
+            _start = 0;
+          } else if (_start < 1) {
+            isFinished = true;
+            timer.cancel();
+            widget.next();
+          } else {
+            _start = _start - 1;
+          }
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       child: ListView(
         children: [
+          widget.question.isTimed
+              ? Align(
+                  alignment: Alignment.topRight,
+                  child: Text((_start ~/ 60).toString() +
+                      ":" +
+                      ((_start % 60) < 10
+                          ? "0" + "${_start % 60}"
+                          : "${(_start % 60)}")),
+                )
+              : Container(),
           Center(
               child: Text(
             widget.question.question,

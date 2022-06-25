@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:oops_project/models/quiz.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class Repository {
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -84,6 +86,17 @@ class Repository {
             title: Text(text),
           );
         });
+  }
+
+  addQuiz(Quiz q) {
+    String fileName = basename(_imageFile.path);
+    StorageReference firebaseStorageRef =
+        FirebaseStorage.instance.ref().child('uploads/$fileName');
+    StorageUploadTask uploadTask = firebaseStorageRef.putFile(_imageFile);
+    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+    taskSnapshot.ref.getDownloadURL().then(
+          (value) => print("Done: $value"),
+        );
   }
 
   showBlockingDialog(BuildContext ctx) {
